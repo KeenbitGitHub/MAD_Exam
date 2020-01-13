@@ -294,4 +294,19 @@ The dimensionality of the given data can now be converted by multiplying the zer
         \end{bmatrix}
     \end{math}
 \end{center}
+
+\section*{Exercise 2}
+First, we compute $Gini(T_{org}, \lambda)$:
+$$Gini(T_{org}, \lambda) = \frac{17}{28} \cdot gini(T_{first}) + \frac{11}{28} \cdot gini(T_{second})$$
+$$= \frac{17}{28} \left(1 - \left(\frac{6}{17}\right)^2 - \left( \frac{1}{17}^2 \right) - \left( \frac{10}{17} \right)^2 \right) + \frac{11}{28} \left(1 - \left( \frac{1}{11} \right)^2 - \left( \frac{7}{11} \right)^2 - \left( \frac{3}{11} \right)^2 \right)$$
+$$ = 0.5206$$
+
+Next, we compute $Gain(T_{orig}, \lambda)$:
+$$Gain(T_{orig}, \lambda) = H(7, 8, 13) - \frac{17}{28} \cdot H(6, 1, 10) - \frac{11}{28} \cdot H(1, 7, 3)$$
+$$ = \left(-\frac{13}{28} \cdot \log_2 \left(\frac{13}{28} \right) - \frac{8}{28} \cdot \log_2 \left( \frac{8}{28} \right) - \frac{7}{28} \cdot \left( \frac{7}{28} \right) \right)$$
+$$ - \frac{17}{28} \left( - \frac{10}{17} \cdot \log_2 \left( \frac{10}{17} \right) - \frac{6}{17} \cdot \log_2 \left( \frac{6}{17} \right) - \frac{1}{17} \cdot \left( \frac{1}{17} \right) \right)$$
+$$ - \frac{11}{28} \left( - \frac{7}{11} \cdot \log_2 \left( \frac{7}{11} \right) - \frac{3}{11} \cdot \log_2 \left( \frac{3}{11} \right) - \frac{1}{11} \cdot \log_2 \left( \frac{1}{11} \right) \right)$$
+$$= 0.3015$$
+
+Thus, it has been computed, that $Gini(T_{org}, \lambda) = 0.5206$ and $Gain(T_{orig}, \lambda) = 0.3015$
 \end{document}
