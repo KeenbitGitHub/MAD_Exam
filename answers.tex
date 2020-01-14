@@ -309,4 +309,30 @@ $$ - \frac{11}{28} \left( - \frac{7}{11} \cdot \log_2 \left( \frac{7}{11} \right
 $$= 0.3015$$
 
 Thus, it has been computed, that $Gini(T_{org}, \lambda) = 0.5206$ and $Gain(T_{orig}, \lambda) = 0.3015$
+
+\subsection*{Exercise 3}
+With my implementation, I have the following performance of the cross-validation:
+\begin{center}
+    \begin{tabular}{|l|l|}
+        \hline
+        C & Accuracy \\
+        \hline
+        0.001 & 0.9225 \\
+        \hline
+        0.01 & 0.92125 \\
+        \hline
+        0.1 & 0.9274999999999999 \\
+        \hline
+        1 & 0.9237500000000001 \\
+        \hline
+        10 & 0.9237500000000001 \\
+        \hline
+        100 & 0.9237500000000001 \\
+        \hline
+    \end{tabular}
+\end{center}
+And the following decision boundary for the optimal svm classifier:
+\begin{center}
+    \includegraphics[width = 7 cm]{3_decision_boundary.png}
+\end{center}
 \end{document}
