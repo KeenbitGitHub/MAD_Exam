@@ -353,6 +353,25 @@ And the following scatter plot:
 \begin{center}
     \includegraphics[height = 7 cm]{kNN_Scatter_b}
 \end{center}
-
+The matrix \textit{M}, makes it possible to tune the impact that the different features have on the distance between the two data point, thus also the impact on the prediction. For instance, the given example matrix
+\begin{center}
+    \begin{math}
+        \left[
+        \begin{array}{cccccccccc}
+            0.00001 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 0.00001 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0.00001 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0.00001 & 0 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0.00001 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 0.00001 & 0 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 0 & 0.00001 & 0 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.00001 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1.0 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1.0 \\
+        \end{array}
+        \right]
+    \end{math}
+\end{center}
+makes the two last features have a bigger impact on the distance and prediction, than the first eight features. This could imply, that the two last feature are more "important", than the first eight features.
 \subsection*{Part 2}
 \end{document}
