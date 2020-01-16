@@ -298,13 +298,13 @@ The dimensionality of the given data can now be converted by multiplying the zer
 \section*{Exercise 2}
 First, we compute $Gini(T_{org}, \lambda)$:
 $$Gini(T_{org}, \lambda) = \frac{17}{28} \cdot gini(T_{first}) + \frac{11}{28} \cdot gini(T_{second})$$
-$$= \frac{17}{28} \left(1 - \left(\frac{6}{17}\right)^2 - \left( \frac{1}{17}^2 \right) - \left( \frac{10}{17} \right)^2 \right) + \frac{11}{28} \left(1 - \left( \frac{1}{11} \right)^2 - \left( \frac{7}{11} \right)^2 - \left( \frac{3}{11} \right)^2 \right)$$
+$$= \frac{17}{28} \left(1 - \left(\frac{6}{17}\right)^2 - \left( \frac{1}{17} \right)^2 - \left( \frac{10}{17} \right)^2 \right) + \frac{11}{28} \left(1 - \left( \frac{1}{11} \right)^2 - \left( \frac{7}{11} \right)^2 - \left( \frac{3}{11} \right)^2 \right)$$
 $$ = 0.5206$$
 
 Next, we compute $Gain(T_{orig}, \lambda)$:
 $$Gain(T_{orig}, \lambda) = H(7, 8, 13) - \frac{17}{28} \cdot H(6, 1, 10) - \frac{11}{28} \cdot H(1, 7, 3)$$
-$$ = \left(-\frac{13}{28} \cdot \log_2 \left(\frac{13}{28} \right) - \frac{8}{28} \cdot \log_2 \left( \frac{8}{28} \right) - \frac{7}{28} \cdot \left( \frac{7}{28} \right) \right)$$
-$$ - \frac{17}{28} \left( - \frac{10}{17} \cdot \log_2 \left( \frac{10}{17} \right) - \frac{6}{17} \cdot \log_2 \left( \frac{6}{17} \right) - \frac{1}{17} \cdot \left( \frac{1}{17} \right) \right)$$
+$$ = \left(-\frac{13}{28} \cdot \log_2 \left(\frac{13}{28} \right) - \frac{8}{28} \cdot \log_2 \left( \frac{8}{28} \right) - \frac{7}{28} \cdot \log_2 \left( \frac{7}{28} \right) \right)$$
+$$ - \frac{17}{28} \left( - \frac{10}{17} \cdot \log_2 \left( \frac{10}{17} \right) - \frac{6}{17} \cdot \log_2 \left( \frac{6}{17} \right) - \frac{1}{17} \cdot \log_2 \left( \frac{1}{17} \right) \right)$$
 $$ - \frac{11}{28} \left( - \frac{7}{11} \cdot \log_2 \left( \frac{7}{11} \right) - \frac{3}{11} \cdot \log_2 \left( \frac{3}{11} \right) - \frac{1}{11} \cdot \log_2 \left( \frac{1}{11} \right) \right)$$
 $$= 0.3015$$
 
@@ -340,7 +340,7 @@ And the following decision boundary for the optimal svm classifier:
 \subsection*{Part 1}
 \subsubsection*{(a)}
 With my implementation, I have gotten the following RMSE-value:
-$$RMSE = 1.2868044065081243$$
+$$RMSE = 0.8243064553494787$$
 And the following scatter plot:
 \begin{center}
     \includegraphics[height = 7 cm]{kNN_Scatter_a}
@@ -348,7 +348,7 @@ And the following scatter plot:
 
 \subsubsection*{(b)}
 With this new distance formula, I have optained the following RMSE-value:
-$$RMSE = 1.2012679122326166$$
+$$RMSE = 1.0997971796682453$$
 And the following scatter plot:
 \begin{center}
     \includegraphics[height = 7 cm]{kNN_Scatter_b}
@@ -375,7 +375,7 @@ The matrix \textit{M}, makes it possible to tune the impact that the different f
 makes the two last features have a bigger impact on the distance and prediction, than the first eight features. This could imply, that the two last feature are more "important", than the first eight features.
 \subsection*{Part 2}
 With my implementation, I got the following RMSE-value:
-$$RMSE = 1.1466816634748596$$
+$$RMSE = 0.8925765347348245$$
 And the following scatter plot:
 \begin{center}
     \includegraphics[height = 7 cm]{LinRegNeighbors_scatter.png}
