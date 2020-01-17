@@ -380,4 +380,136 @@ And the following scatter plot:
 \begin{center}
     \includegraphics[height = 7 cm]{LinRegNeighbors_scatter.png}
 \end{center}
+
+\section*{Exercise 5}
+\subsection*{Part 1}
+We have been given the following expression
+\begin{center}
+    \begin{math}
+        p(t_n|\bm{x}_n; \bm{w}) = \frac{f(\bm{x}_n; \bm{w})^{t_n}exp(-f(\bm{x}_n; \bm{w}))}{t_n!}
+    \end{math}
+\end{center}
+And we wish to find the joint conditional density:
+\begin{center}
+    \begin{math}
+        p(\bm{t}|\bm{X};\bm{w})
+    \end{math}
+\end{center}
+Which extends to
+\begin{center}
+    \begin{math}
+        p(t_1, ..., t_N | \bm{x}_1, ..., \bm{x}_N; \bm{w})
+    \end{math}
+\end{center}
+Following the formula for joint probability distribution
+\begin{center}
+    \begin{math}
+        p(A, B) = p(A) \cdot p(B)
+    \end{math}
+\end{center}
+We get the result
+\begin{center}
+    \begin{math}
+        p(\bm{t}|\bm{X};\bm{w}) = \displaystyle\prod_{n = 1}^N p(t_n|\bm{x}_n; \bm{w}) = \displaystyle\prod_{n = 1}^N \frac{f(\bm{x}_n; \bm{w})^{t_n}exp(-f(\bm{x}_n; \bm{w}))}{t_n!}
+    \end{math}
+\end{center}
+
+\subsection*{Part 2}
+Since, it says in the exercise desciption, how we only should include the essential steps for deriving the expression, some of the descriptions of actions in the following exercise have been left out. \\
+We have been given the expression for $p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2)$, which we extend
+\begin{center}
+    \begin{math}
+        p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2) = \frac{\prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0))}{p(\bm{t} | \bm{X})}
+    \end{math}
+\end{center}
+To find $\log p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2)$, we start of by taking the $\log$ on both sides and reducing a little:
+\begin{center}
+    \begin{math}
+        \log p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2) = 
+        \log \left(\frac{\prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0))}{p(\bm{t} | \bm{X})} \right) \newline
+        = \log \left( \prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \right) + 
+        \log \left( \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \right) 
+        + \log \left( \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0)) \right) 
+        - \log \left( p(\bm{t} | \bm{X}) \right)
+    \end{math}
+\end{center}
+For the sake of readability, I choose to split the proof into three sections:
+\subsubsection*{First Section}
+In this section, I will prove 
+\begin{center}
+    \begin{math}
+        \log \left( \prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \right) = \sum^N_{n = 1} \left( t_n \log f(\bm{x}_n; \bm{w}) - f(\bm{x}_n; \bm{w}) - \log t_n ! \right)
+    \end{math}
+\end{center}
+This is done by the following
+\begin{center}
+    \begin{math}
+        \log \left( \prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \right)
+        = \sum^N_{n = 1} \log \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) 
+        = \sum^N_{n = 1} \left( \log(f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))) - \log t_n! \right)
+        = \sum^N_{n = 1} \left( \log f(\bm{x}_n; \bm{w})^{t_n} + \log \exp(-f(\bm{x}_n; \bm{w})) - \log t_n! \right)
+        = \sum^N_{n = 1} \left( t_n \log f(\bm{x}_n; \bm{w}) -f(\bm{x}_n; \bm{w}) - \log t_n! \right)
+    \end{math}
+\end{center}
+
+\subsubsection*{Second Section}
+In this section, I will prove 
+\begin{center}
+    \begin{math}
+        \log \left( \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0)) \right) 
+        = -\frac{1}{2 \sigma_0^2}(\bm{w} - \mu_0)^T (\bm{w} - \mu_0)
+    \end{math}
+\end{center}
+This is done by
+\begin{center}
+    \begin{math}
+        \log \left( \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0)) \right) 
+        = -\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0)
+        = -\frac{1}{2}(\bm{w} - \mu_0)^T(\frac{1}{\sigma_0^2}\bm{I})(\bm{w} - \mu_0)
+        = -\frac{1}{2} \frac{1}{\sigma_0^2} (\bm{w} - \mu_0)^T\bm{I}(\bm{w} - \mu_0)
+        = -\frac{1}{2 \sigma_0^2} (\bm{w} - \mu_0)^T(\bm{w} - \mu_0)
+    \end{math}
+\end{center}
+
+\subsubsection*{Third section}
+In this section, I will prove
+\begin{center}
+    \begin{math}
+        \log \left( \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \right) 
+        = - \log \left( \sqrt{2 \pi \sigma_0^2}^{D + 1} \right)
+    \end{math}
+\end{center}
+This is done by
+\begin{center}
+    \begin{math}
+        \log \left( \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \right) 
+        = \log(1) - \log((2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2})
+        = - \log((2 \pi)^\frac{D+1}{2} \left( \sigma_0^{2 \cdot (D + 1)} \right)^\frac{1}{2})
+        = - \log((2 \pi)^\frac{D+1}{2} \left( \sigma_0^{2} \right)^\frac{D + 1}{2})
+        = - \log((2 \pi)^{\left(\frac{1}{2}\right)^D} \left( \sigma_0^{2} \right)^{\left(\frac{1}{2}\right)^D})
+        = - \log (2 \pi \sigma_0^{2})^{\left(\frac{1}{2}\right)^D}
+        = - \log \sqrt{(2 \pi \sigma_0^{2})}^D
+    \end{math}
+\end{center}
+
+\subsubsection*{Section 4}
+Substituting the results of these three sections into $\log p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2)$ gives the following
+\begin{center}
+    \begin{math}
+        \log p(w | \bm{t}, \bm{X}, \mu_0, \sigma_0^2)
+        = \log \left( \prod_{n = 1}^N \left( \frac{f(\bm{x}_n; \bm{w})^{t_n}\exp(-f(\bm{x}_n; \bm{w}))}{t_n!}\right) \right) + 
+        \log \left( \frac{1}{(2 \pi)^\frac{D+1}{2} \det(\sigma_0^2 \bm{I})^\frac{1}{2}} \right) 
+        + \log \left( \exp(-\frac{1}{2}(\bm{w} - \mu_0)^T(\sigma_0^2\bm{I})^{-1}(\bm{w} - \mu_0)) \right) 
+        - \log \left( p(\bm{t} | \bm{X}) \right)
+        = \sum^N_{n = 1} \left( t_n \log f(\bm{x}_n; \bm{w}) -f(\bm{x}_n; \bm{w}) - \log t_n! \right) - \log \sqrt{(2 \pi \sigma_0^{2})}^D -\frac{1}{2 \sigma_0^2} (\bm{w} - \mu_0)^T(\bm{w} - \mu_0) - \log \left( p(\bm{t} | \bm{X}) \right)
+    \end{math}
+\end{center}
+Rearranging, the equation a little, and we get to the result:
+\begin{center}
+    \begin{math}
+        \displaystyle \sum^N_{n = 1} \left( t_n \log f(\bm{x}_n; \bm{w}) -f(\bm{x}_n; \bm{w}) - \log t_n! \right) - \log \sqrt{(2 \pi \sigma_0^{2})}^D -\frac{1}{2 \sigma_0^2} (\bm{w} - \mu_0)^T(\bm{w} - \mu_0) - \log \left( p(\bm{t} | \bm{X}) \right) \newline
+        = \displaystyle \sum^N_{n = 1} \left( t_n \log f(\bm{x}_n; \bm{w}) -f(\bm{x}_n; \bm{w}) - \log t_n! \right) -\frac{1}{2 \sigma_0^2} (\bm{w} - \mu_0)^T(\bm{w} - \mu_0) - \log \sqrt{(2 \pi \sigma_0^{2})}^D - \log \left( p(\bm{t} | \bm{X}) \right),
+        \quad \quad Q.E.D
+    \end{math}
+\end{center}
 \end{document}
