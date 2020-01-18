@@ -108,9 +108,9 @@ class Metropolis_Hasting:
         self.mu = np.ones(self.X.shape[1])
         self.accepted = []
         self.iterations = iterations
-        self.variance = variance
         self.fit()
         self.accepted = self.burn_in(np.array(self.accepted))
+        print(self.accepted)
         
     def burn_in(self, w, percentage = 0.20):
         quantity = int(percentage * float(len(w)))
@@ -134,11 +134,11 @@ class Metropolis_Hasting:
         if (not rerun):
             return sample
         else:
-            return self.proposal()
+            return self.prior()
     
     def proposal(self):
         rerun = False
-        sample = np.random.multivariate_normal(self.mu, self.variance * np.identity(len(self.mu)))
+        sample = np.random.multivariate_normal(self.mu, 0.1 * np.identity(len(self.mu)))
         
         for x in self.X:
             if (not (self.f(x, sample) > 0)):
@@ -154,24 +154,14 @@ class Metropolis_Hasting:
         for i in range(len(self.t)):
             s += self.t[i] * np.log(self.f(self.X[i], w)) - self.f(self.X[i], w) - log_factorial_scalar(self.t[i])
 
-        s -= 1/(2 * self.variance) * np.matmul(np.subtract(w, self.mu).T, np.subtract(w, self.mu))
-        s -= np.log(np.power(np.sqrt(2 * np.pi * self.variance), len(self.mu)))
+        s -= 1/(2 * 0.25) * np.matmul(np.subtract(w, self.mu).T, np.subtract(w, self.mu))
+        s -= np.log(np.power(np.sqrt(2 * np.pi * 0.25), len(self.mu)))
 
         return s
     
-    def log_posterior1(self, w):
-        s = 0
-        for i in range(len(self.t)):
-            s += self.t[i] * np.log(self.f(self.X[i], w)) - self.f(self.X[i], w) - log_factorial_scalar(self.t[i])
-
-        s -= 1/(2 * self.variance) * np.matmul(np.subtract(w, self.mu).T, np.subtract(w, self.mu))
-        s -= np.log(np.power(np.sqrt(2 * np.pi * self.variance), len(self.mu)))
-
-        return s
-        
     def acceptance(self, w_new, w_t1):
         left_side = 0
-        right_side = self.log_posterior(w_new) - self.log_posterior1(w_t1)
+        right_side = self.log_posterior(w_new) - self.log_posterior(w_t1)
 
         return min(left_side, right_side)
         
