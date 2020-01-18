@@ -89,15 +89,28 @@ plt.ylabel('hist(t)')
 # if you find this appropriate.
 #####################################################
 
+
+# Calculates the RMSE between the true value, t, and the predicted value, tp.
+# This function has been taken from my answer to assignment 1.
+# The assignment was fully made by me and not made in any collaborations.
+def RMSE(t, tp):
+    N = len(t)
+    s = 0
+    for i in range(N):
+        s += np.linalg.norm((t[i] - tp[i]))**2
+    s /= N
+    s = s**(0.5)
+    return s
+
 class Metropolis_Hasting:
-    def __init__(self, X, t, iterations, variance = 1.0):
+    def __init__(self, X, t, iterations, variance = 0.25 ):
         self.X = self.prepare_data(X, axis = 1)
         self.t = t
-        self.mu = self.prepare_data(np.mean(X, axis = 0), axis = 0)
+        self.mu = np.ones(self.X.shape[1])
         self.accepted = []
         self.iterations = iterations
         self.variance = variance
-        self.run_algorithm()
+        self.fit()
         self.accepted = self.burn_in(np.array(self.accepted))
         
     def burn_in(self, w, percentage = 0.20):
@@ -137,31 +150,34 @@ class Metropolis_Hasting:
         else:
             return self.proposal()
         
-    def likelihood(self, w):
-        p = 1
-        for i in range(len(self.t)):
-            p_temp = np.matmul(np.power(self.f(self.X[i], w), self.t[i]), np.exp(-1 * self.f(self.X[i], w)))
-            p_temp /= factorial_scalar(self.t[i])
-            p *= p_temp
-            
-        return p
-        
     def log_posterior(self, w):
         s = 0
         for i in range(len(self.t)):
-            s += self.t[i] * np.log(self.f(self.X[i], w)) - self.f(self.X[i], w) - factorial_scalar(self.t[i])
-        
+            s += self.t[i] * np.log(self.f(self.X[i], w)) - self.f(self.X[i], w) - log_factorial_scalar(self.t[i])
+
         s -= 1/(2 * self.variance) * np.matmul(np.subtract(w, self.mu).T, np.subtract(w, self.mu))
         s -= np.log(np.power(np.sqrt(2 * np.pi * self.variance), len(self.mu)))
-        # needs to subtract log p(t|X)
+
+        return s
+    
+    def log_posterior1(self, w):
+        s = 0
+        for i in range(len(self.t)):
+            s += self.t[i] * np.log(self.f(self.X[i], w)) - self.f(self.X[i], w) - log_factorial_scalar(self.t[i])
+        #print(s)
+        s -= 1/(2 * self.variance) * np.matmul(np.subtract(w, self.mu).T, np.subtract(w, self.mu))
+        s -= np.log(np.power(np.sqrt(2 * np.pi * self.variance), len(self.mu)))
+
         return s
         
     def acceptance(self, w_new, w_t1):
         left_side = 0
-        right_side = np.log(self.log_posterior(w_new)/ self.log_posterior(w_t1))
+        #print(w_t1)
+        right_side = self.log_posterior(w_new) - self.log_posterior1(w_t1)
+
         return min(left_side, right_side)
         
-    def run_algorithm(self, autocorrelation = 5):
+    def fit(self, autocorrelation = 5):
         w_t1 = self.prior()
         steps = 0
         for i in range(self.iterations):
@@ -169,18 +185,47 @@ class Metropolis_Hasting:
             w_new = self.proposal()
             r = self.acceptance(w_new, w_t1)
             u = np.random.normal(0, 1)
-            if (r > u):
+            if (r > np.log(u)):
                 if (steps % autocorrelation == 0):
                     self.accepted.append(w_new)
                     w_t1 = w_new
             else:
                 if (steps % autocorrelation == 0):
-                    self.accepted.append(w_t1)
-    
-    
-MH = Metropolis_Hasting(X_train, t_train, 10000)
-MH_mean = np.mean(MH.accepted)
-print(MH_mean)
+                    self.accepted.append(w_t1)  
+
+    def predict(self, X):
+        t = []
+        for x in X:
+            x = np.array(x)
+            s = 0
+            for w in self.accepted:
+                w = np.array(w)
+                s += self.f(self.prepare_data(x, axis = 0), w)
+                
+            s /= len(self.accepted)
+            t.append(s)
+        
+        t = np.array(t).reshape((-1, 1))
+        return t
+"""
+model_1 = Metropolis_Hasting(np.array(X_train[:, 3]).reshape((-1, 1)), t_train, 10000)
+model_1_predictions = model_1.predict(np.array(X_test[:, 4]).reshape((-1, 1)))
+RMSE_1 = RMSE(t_test, model_1_predictions)
+print("RMSE 1: {}".format(RMSE_1))
+
+model_2 = Metropolis_Hasting(np.array(X_train[:, 2:4]).reshape((-1, X_train[:, 2:4].shape[1])), t_train, 10000)
+model_2_predictions = model_2.predict(np.array(X_test[:, 2:4]).reshape((-1, X_train[:, 2:4].shape[1])))
+RMSE_2 = RMSE(t_test, model_2_predictions)
+print("RMSE 2: {}".format(RMSE_2))
+"""
+model_3 = Metropolis_Hasting(np.array(X_train).reshape((-1, X_train.shape[1])), t_train, 10000)
+model_3_predictions = model_3.predict(np.array(X_test).reshape((-1, X_train.shape[1])))
+RMSE_3 = RMSE(t_test, model_3_predictions)
+print("RMSE 3: {}".format(RMSE_3))
+
+
+
+#plt.plot(model_1.accepted[:, 0], model_1.accepted[:, 1], 'bo')
 
 # Show all figures
-plt.show()
+#plt.show()
