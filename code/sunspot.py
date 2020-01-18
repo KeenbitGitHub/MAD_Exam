@@ -176,8 +176,8 @@ class Metropolis_Hasting:
             u = np.random.normal(0, 1)
             if (r > np.log(u)):
                 if (steps % autocorrelation == 0):
-                    self.accepted.append(w_new)
                     w_t1 = w_new
+                    self.accepted.append(w_t1)
 
     def predict(self, X):
         t = []
