@@ -2,7 +2,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.random.seed(1)
+
 
 def readdataset(filename):
     """readdataset - reads the sunspot data set from the file with filename.
@@ -105,19 +105,15 @@ def RMSE(t, tp):
     return s
 
 class Metropolis_Hasting:
-    def __init__(self, X, t, iterations):
+    def __init__(self, X, t, n_accepted_samples, n_burn_in):
         self.X = self.prepare_data(X, axis = 1)
         self.t = t
         self.mu = np.ones(self.X.shape[1])
         self.accepted = []
-        self.iterations = iterations
+        self.n_accepted_samples = n_accepted_samples
+        self.n_burn_in = n_burn_in
         self.fit()
         self.accepted = np.array(self.accepted)
-        self.accepted = self.burn_in(np.array(self.accepted))
-  
-    def burn_in(self, w, percentage = 0.20):
-        quantity = int(percentage * float(len(w)))
-        return w[-(len(w)-quantity):, :]
 
     def prepare_data(self, data, axis = 1):
         new_data = np.insert(data, 0, 1, axis = axis)
@@ -171,18 +167,23 @@ class Metropolis_Hasting:
     def fit(self, thinning = 5):
         steps = 0
         w_t1 = self.prior()
-        for i in range(self.iterations):
+        while(len(self.accepted) < self.n_accepted_samples):
             w_new = self.proposal(w_t1)
             r = self.acceptance(w_new, w_t1)
             u = np.random.uniform(0, 1)
             steps += 1
-            if (r >= np.log(u)):
-                if (steps % thinning == 0):
-                    w_t1 = w_new
-                    self.accepted.append(w_t1)
+            if (steps < self.n_burn_in):
+                continue
             else:
-                if (steps % thinning == 0):
-                    self.accepted.append(w_t1)
+                if (r >= np.log(u)):
+                    if (steps % thinning == 0):
+                        w_t1 = w_new
+                        self.accepted.append(w_t1)
+                else:
+                    if (steps % thinning == 0):
+                        self.accepted.append(w_t1)
+                        
+        print(len(self.accepted))
 
     def predict(self, X):
         t = []
@@ -196,17 +197,17 @@ class Metropolis_Hasting:
         
         return t
 
-model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, 10000)
+model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, 3000, 5)
 model_1_predictions = model_1.predict(X_test[:, 4].reshape((-1, 1)))
 RMSE_1 = RMSE(t_test, model_1_predictions)
 print("RMSE 1: {}".format(RMSE_1))
 
-model_2 = Metropolis_Hasting(X_train[:, 2:4], t_train, 10000)
+model_2 = Metropolis_Hasting(X_train[:, 2:4], t_train, 3000, 5)
 model_2_predictions = model_2.predict(X_test[:, 2:4])
 RMSE_2 = RMSE(t_test, model_2_predictions)
 print("RMSE 2: {}".format(RMSE_2))
 
-model_3 = Metropolis_Hasting(X_train, t_train, 10000)
+model_3 = Metropolis_Hasting(X_train, t_train, 3000, 5)
 model_3_predictions = model_3.predict(X_test)
 RMSE_3 = RMSE(t_test, model_3_predictions)
 print("RMSE 3: {}".format(RMSE_3))
