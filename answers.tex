@@ -247,7 +247,26 @@ Thus, for the eigenvalue 0.355, we have the eigenvector
         \right]
     \end{math}
 \end{center}
-
+Thus, it has been computed, that we have the mean point of data at $(0.45, 0)$, the eigenvalues $1.820$ and $0.355$ and the following eigenvectors
+\begin{center}
+    \begin{math}
+        \left[
+            \begin{array}{c}
+                0.171 \\
+                1
+            \end{array}
+        \right]
+        \quad
+        \text{and}
+        \quad
+        \left[
+            \begin{array}{c}
+                -58.6 \\
+                1
+            \end{array}
+        \right]
+    \end{math}
+\end{center}
 \section*{Exercise 2}
 First, we compute $Gini(T_{org}, \lambda)$:
 $$Gini(T_{org}, \lambda) = \frac{17}{28} \cdot gini(T_{first}) + \frac{11}{28} \cdot gini(T_{second})$$
@@ -474,7 +493,7 @@ See \texttt{code/sunspot.py} for the source code of my implementation
 \begin{center}
     \includegraphics[height = 7 cm]{5_4.png}
 \end{center}
-Looking at the 2D plot, I would say the samples are correlated, as most of them, are very close to each other.
+Looking at the 2D plot, I would say the samples are correlated, as most of them, are very close to each other and they are "on the same path".
 
 \subsubsection*{Part 5}
 When I ran my implementation of the Metropolis-Hasting algorithm on the three different model selections over 5 different sets of samples, I got the following RMSE values:
@@ -497,15 +516,15 @@ When I ran my implementation of the Metropolis-Hasting algorithm on the three di
         \hline
     \end{tabular}
 \end{center}
-Looking at these RMSE values, the model with selection 3 clearly gives the best results, as it is the model with the lowest RMSE value. Next is the model with selection 1, and worst is the model with selection 2. \\
+Looking at these RMSE values, the model with selection 3 clearly gives the best prediction results, as it is the model with the lowest RMSE value. Next is the model with selection 1, and worst is the model with selection 2. \\
 
 For model selection 1, I have made the following scatter plot of the test set and the predictions:
 \begin{center}
     \includegraphics[height = 7 cm]{5_5.png}
 \end{center}
 
-By trying out different values of the amount of samples for the different model selections, I can conclude, that the models need around 3000 accepted samples for the optimal predictions. \\
+It is quite difficult to specify how many samples are need for my implementation. This is due to the fact, that the more samples used, the lower RMSE the implementation gets, where the RMSE decreases less, the greater the amount of samples used. By trying out different values of the amount of samples for the different model selections, an amount of 3000 accepted samples gives some good predictions and not to long sample generation period.
 
-By looking at the generated samples, as well as trying out different values, I have fixed the burn-in time and skip steps to respectively 30 and 5. The burn-in discards the first 30 samples of the accepted samples, as those might not be representative. On the other hand, by only accepting every 5th sample, the samples will be more independent. More independence could be optained, by increasing the variance in the proposal, so each generated sampled would "walk" further away from the last generated sample, however, I have chosen a small numer (at 0.1), since this number resultet in better predictions.
+By looking at the generated samples, as well as trying out different values, I have fixed the burn-in time and skip steps to respectively 30 and 5. The burn-in discards the first 30 samples of the accepted samples, as those might not be representative. On the other hand, by only accepting every 5th sample, the samples will be more independent. This number could be increased further for more independence between the samples, however, I have not chosen to do so, since this will also result in worse predictions. More independence could be obtained further by increasing the variance in the proposal, so each generated sampled would "walk" further away from the last generated sample, however, I have chosen a small numer (at 0.1), since this number resultet in better predictions.
 
 \end{document}
