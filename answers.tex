@@ -17,8 +17,6 @@
 \maketitle
 
 \subsection*{Exercise 1}
-I find the task of this exercise a little ambiguous, as I am not sure if I am supposed to (only) compute the mean point of the data, the two eigenvalues and the two eigenvectors or if I am also supposed to convert the dimensionality. To be on the safe side, I will also convert the dimensionality, however, if I was not supposed to do this, please just overlook that part of my answer. \\
-\\
 We are given the following $N = 8$ 2-dimensional points:
 \begin{center}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
@@ -249,51 +247,6 @@ Thus, for the eigenvalue 0.355, we have the eigenvector
         \right]
     \end{math}
 \end{center}
-Thus, sorting the eigenvalues in descending order and the eigenvectors accordingly, we get the following matrix of the eigenvectors:
-\begin{center}
-    \begin{math}
-        \bm{P} =
-        \left[
-            \begin{array}{cc}
-                0.171 & -58.6 \\
-                1 & 1
-            \end{array}
-        \right]
-    \end{math}
-\end{center}
-The dimensionality of the given data can now be converted by multiplying the zero-mean matrix, $\bm{S}$ with $\bm{P}$:
-\begin{center}
-    \begin{math}
-        \begin{bmatrix}
-            -0.35 & 1 \\
-            0.05 & 1 \\
-            0.65 & 2 \\
-            -0.95 & 0.2 \\
-            0.85 & -0.1 \\
-            -0.25 & -0.1 \\
-            -0.55 & -1.5 \\
-            0.55 & -2.5
-        \end{bmatrix}
-        \cdot
-        \left[
-            \begin{array}{cc}
-                0.171 & -58.6 \\
-                1 & 1
-            \end{array}
-        \right]
-        =
-        \begin{bmatrix}
-            0.9402 & 21.51 \\
-            1.0086 & -1.93 \\
-            2.1112 & -36.09 \\
-            0.03755 & 55.87 \\
-            0.04535 & -49.91 \\
-            -0.1428 & 14.55 \\
-            -1.5941 & 30.73 \\
-            -2.406 & -34.73
-        \end{bmatrix}
-    \end{math}
-\end{center}
 
 \section*{Exercise 2}
 First, we compute $Gini(T_{org}, \lambda)$:
@@ -513,4 +466,46 @@ Rearranging, the equation a little, and we get to the result:
         \quad \quad Q.E.D
     \end{math}
 \end{center}
+
+\subsection*{Part 3}
+See \texttt{code/sunspot.py} for the source code of my implementation
+
+\subsection*{Part 4}
+\begin{center}
+    \includegraphics[height = 7 cm]{5_4.png}
+\end{center}
+Looking at the 2D plot, I would say the samples are correlated, as most of them, are very close to each other.
+
+\subsubsection*{Part 5}
+When I ran my implementation of the Metropolis-Hasting algorithm on the three different model selections over 5 different sets of samples, I got the following RMSE values:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Iteration & Selection 1 & Selection 2 & Selection 3 \\
+        \hline
+        1 & 29.05787 & 44.4726 & 19.8786 \\
+        \hline
+        2 & 29.0298 & 44.9460 & 19.1823 \\
+        \hline
+        3 & 29.0466 & 44.1827 & 20.3028 \\
+        \hline
+        4 & 29.0616 & 45.1014 & 18.5558 \\
+        \hline
+        5 & 29.0325 & 44.7816 & 20.1317 \\
+        \hline
+        Average & 29.0457 & 44.6969 & 19.61020 \\
+        \hline
+    \end{tabular}
+\end{center}
+Looking at these RMSE values, the model with selection 3 clearly gives the best results, as it is the model with the lowest RMSE value. Next is the model with selection 1, and worst is the model with selection 2. \\
+
+For model selection 1, I have made the following scatter plot of the test set and the predictions:
+\begin{center}
+    \includegraphics[height = 7 cm]{5_5.png}
+\end{center}
+
+By trying out different values of the amount of samples for the different model selections, I can conclude, that the models need around 3000 accepted samples for the optimal predictions. \\
+
+By looking at the generated samples, as well as trying out different values, I have fixed the burn-in time and skip steps to respectively 30 and 5. The burn-in discards the first 30 samples of the accepted samples, as those might not be representative. On the other hand, by only accepting every 5th sample, the samples will be more independent. More independence could be optained, by increasing the variance in the proposal, so each generated sampled would "walk" further away from the last generated sample, however, I have chosen a small numer (at 0.1), since this number resultet in better predictions.
+
 \end{document}

@@ -2,8 +2,6 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
 def readdataset(filename):
     """readdataset - reads the sunspot data set from the file with filename.
        Returns tuple of (X, t)."""
@@ -56,9 +54,8 @@ X_test, t_test = readdataset('../data/sunspotsTestStatML.dt')
 N_test, D_test = X_test.shape
 print("Test set has X dimension D = " + str(D_test) + " and N = " + str(N_test) + ' samples.')
 
-
-# Visualize the data set
 """
+# Visualize the data set
 plt.figure()
 plt.plot(X_train[:,4], t_train, 'o')
 plt.title("Train")
@@ -94,7 +91,6 @@ plt.ylabel('hist(t)')
 
 # This function has been taken from my answer to assignment 1.
 # The assignment was fully made by me and not made in any collaborations.
-# TESTED
 def RMSE(t, tp):
     N = len(t)
     s = 0
@@ -105,14 +101,14 @@ def RMSE(t, tp):
     return s
 
 class Metropolis_Hasting:
-    def __init__(self, X, t, n_accepted_samples, n_burn_in):
+    def __init__(self, X, t, n_accepted_samples, n_burn_in, n_thinning):
         self.X = self.prepare_data(X, axis = 1)
         self.t = t
         self.mu = np.ones(self.X.shape[1])
         self.accepted = []
         self.n_accepted_samples = n_accepted_samples
         self.n_burn_in = n_burn_in
-        self.fit()
+        self.fit(n_thinning)
         self.accepted = np.array(self.accepted)
 
     def prepare_data(self, data, axis = 1):
@@ -158,18 +154,18 @@ class Metropolis_Hasting:
 
         return s
 
-    def acceptance(self, w_new, w_t1):
+    def acceptance(self, w_new, w_old):
         left_side = 0
-        right_side = self.log_posterior(w_new) - self.log_posterior(w_t1)
+        right_side = self.log_posterior(w_new) - self.log_posterior(w_old)
 
         return min(left_side, right_side)
         
     def fit(self, thinning = 5):
         steps = 0
-        w_t1 = self.prior()
+        w_old = self.prior()
         while(len(self.accepted) < self.n_accepted_samples):
-            w_new = self.proposal(w_t1)
-            r = self.acceptance(w_new, w_t1)
+            w_new = self.proposal(w_old)
+            r = self.acceptance(w_new, w_old)
             u = np.random.uniform(0, 1)
             steps += 1
             if (steps < self.n_burn_in):
@@ -177,14 +173,12 @@ class Metropolis_Hasting:
             else:
                 if (r >= np.log(u)):
                     if (steps % thinning == 0):
-                        w_t1 = w_new
-                        self.accepted.append(w_t1)
+                        w_old = w_new
+                        self.accepted.append(w_old)
                 else:
                     if (steps % thinning == 0):
-                        self.accepted.append(w_t1)
+                        self.accepted.append(w_old)
                         
-        print(len(self.accepted))
-
     def predict(self, X):
         t = []
         for x in X:
@@ -197,22 +191,32 @@ class Metropolis_Hasting:
         
         return t
 
-model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, 3000, 5)
+number_of_samples = 3000
+burn_in = 30
+thinning = 5
+
+"""
+model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, number_of_samples, burn_in, thinning)
 model_1_predictions = model_1.predict(X_test[:, 4].reshape((-1, 1)))
 RMSE_1 = RMSE(t_test, model_1_predictions)
 print("RMSE 1: {}".format(RMSE_1))
-
-model_2 = Metropolis_Hasting(X_train[:, 2:4], t_train, 3000, 5)
+"""
+model_2 = Metropolis_Hasting(X_train[:, 2:4], t_train, number_of_samples, burn_in, thinning)
 model_2_predictions = model_2.predict(X_test[:, 2:4])
 RMSE_2 = RMSE(t_test, model_2_predictions)
 print("RMSE 2: {}".format(RMSE_2))
-
-model_3 = Metropolis_Hasting(X_train, t_train, 3000, 5)
+"""
+model_3 = Metropolis_Hasting(X_train, t_train, number_of_samples, burn_in, thinning)
 model_3_predictions = model_3.predict(X_test)
 RMSE_3 = RMSE(t_test, model_3_predictions)
 print("RMSE 3: {}".format(RMSE_3))
-
+"""
+#plt.figure()
 #plt.plot(model_1.accepted[:, 0], model_1.accepted[:, 1], 'bo')
 
+#plt.figure()
+#plt.scatter(t_test, model_1_predictions, c = "blue")
+#plt.xlabel("True values")
+#plt.ylabel("Predictions")
 # Show all figures
-#plt.show()
+plt.show()
