@@ -2,6 +2,8 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(1)
+
 def readdataset(filename):
     """readdataset - reads the sunspot data set from the file with filename.
        Returns tuple of (X, t)."""
@@ -92,6 +94,7 @@ plt.ylabel('hist(t)')
 
 # This function has been taken from my answer to assignment 1.
 # The assignment was fully made by me and not made in any collaborations.
+# TESTED
 def RMSE(t, tp):
     N = len(t)
     s = 0
@@ -102,31 +105,31 @@ def RMSE(t, tp):
     return s
 
 class Metropolis_Hasting:
-    def __init__(self, X, t, iterations, variance = 0.25):
+    def __init__(self, X, t, iterations):
         self.X = self.prepare_data(X, axis = 1)
         self.t = t
         self.mu = np.ones(self.X.shape[1])
         self.accepted = []
         self.iterations = iterations
         self.fit()
+        self.accepted = np.array(self.accepted)
         self.accepted = self.burn_in(np.array(self.accepted))
-        print(self.accepted)
-        
+  
     def burn_in(self, w, percentage = 0.20):
         quantity = int(percentage * float(len(w)))
-        return w[quantity:, :]
-    
+        return w[-(len(w)-quantity):, :]
+
     def prepare_data(self, data, axis = 1):
         new_data = np.insert(data, 0, 1, axis = axis)
         return new_data
-    
+
     def f(self, x, w):
         return np.matmul(w.T, x)
-    
+
     def prior(self):
         rerun = False
-        sample = np.random.multivariate_normal(np.ones(len(self.mu)), 0.25 * np.identity(len(self.mu)))
-        
+        sample = np.random.multivariate_normal(self.mu.T, 0.25 * np.identity(len(self.mu)))
+
         for x in self.X:
             if (not (self.f(x, sample) > 0)):
                 rerun = True
@@ -135,11 +138,11 @@ class Metropolis_Hasting:
             return sample
         else:
             return self.prior()
-    
-    def proposal(self):
+
+    def proposal(self, mu):
         rerun = False
-        sample = np.random.multivariate_normal(self.mu, 0.1 * np.identity(len(self.mu)))
-        
+        sample = np.random.multivariate_normal(mu.T, 0.1 * np.identity(len(self.mu)))
+
         for x in self.X:
             if (not (self.f(x, sample) > 0)):
                 rerun = True
@@ -147,8 +150,8 @@ class Metropolis_Hasting:
         if (not rerun):
             return sample
         else:
-            return self.proposal()
-        
+            return self.proposal(mu)
+
     def log_posterior(self, w):
         s = 0
         for i in range(len(self.t)):
@@ -158,43 +161,42 @@ class Metropolis_Hasting:
         s -= np.log(np.power(np.sqrt(2 * np.pi * 0.25), len(self.mu)))
 
         return s
-    
+
     def acceptance(self, w_new, w_t1):
         left_side = 0
         right_side = self.log_posterior(w_new) - self.log_posterior(w_t1)
 
         return min(left_side, right_side)
         
-    def fit(self, autocorrelation = 5):
+    def fit(self, thinning = 5):
         steps = 0
         w_t1 = self.prior()
         for i in range(self.iterations):
-            steps += 1
-            w_new = self.proposal()
+            w_new = self.proposal(w_t1)
             r = self.acceptance(w_new, w_t1)
-
-            u = np.random.normal(0, 1)
-            if (r > np.log(u)):
-                if (steps % autocorrelation == 0):
+            u = np.random.uniform(0, 1)
+            steps += 1
+            if (r >= np.log(u)):
+                if (steps % thinning == 0):
                     w_t1 = w_new
+                    self.accepted.append(w_t1)
+            else:
+                if (steps % thinning == 0):
                     self.accepted.append(w_t1)
 
     def predict(self, X):
         t = []
         for x in X:
-            x = np.array(x)
             s = 0
             for w in self.accepted:
-                w = np.array(w)
                 s += self.f(self.prepare_data(x, axis = 0), w)
                 
             s /= len(self.accepted)
             t.append(s)
         
-        t = np.array(t).reshape((-1, 1))
         return t
 
-model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, 1000)
+model_1 = Metropolis_Hasting(X_train[:, 4].reshape((-1, 1)), t_train, 10000)
 model_1_predictions = model_1.predict(X_test[:, 4].reshape((-1, 1)))
 RMSE_1 = RMSE(t_test, model_1_predictions)
 print("RMSE 1: {}".format(RMSE_1))
